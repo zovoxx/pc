@@ -1,0 +1,35 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/enemies/projectile.gd" id="1_projectile"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_orb"]
+radius = 0.3
+
+[sub_resource type="StandardMaterial3D" id="Mat_orb"]
+albedo_color = Color(1, 0.45, 0.8, 1)
+emission_enabled = true
+emission = Color(1, 0.35, 0.75, 1)
+emission_energy_multiplier = 4.0
+
+[sub_resource type="SphereMesh" id="SphereMesh_orb"]
+material = SubResource("Mat_orb")
+radius = 0.3
+height = 0.6
+
+[node name="Projectile" type="Area3D"]
+collision_layer = 8
+collision_mask = 3
+monitorable = false
+script = ExtResource("1_projectile")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_orb")
+
+[node name="Mesh" type="MeshInstance3D" parent="."]
+cast_shadow = 0
+mesh = SubResource("SphereMesh_orb")
+
+[node name="Glow" type="OmniLight3D" parent="."]
+light_color = Color(1, 0.4, 0.8, 1)
+light_energy = 1.5
+omni_range = 3.5

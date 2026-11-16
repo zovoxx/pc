@@ -1,0 +1,66 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
+[ext_resource type="PackedScene" path="res://scenes/arena.tscn" id="2_arena"]
+[ext_resource type="PackedScene" path="res://scenes/player.tscn" id="3_player"]
+[ext_resource type="Script" path="res://scripts/world/wave_spawner.gd" id="4_spawner"]
+[ext_resource type="PackedScene" path="res://scenes/grunt.tscn" id="5_grunt"]
+[ext_resource type="PackedScene" path="res://scenes/shooter.tscn" id="6_shooter"]
+[ext_resource type="PackedScene" path="res://scenes/hud.tscn" id="7_hud"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_main"]
+sky_top_color = Color(0.28, 0.42, 0.7, 1)
+sky_horizon_color = Color(0.7, 0.75, 0.84, 1)
+ground_bottom_color = Color(0.14, 0.15, 0.18, 1)
+ground_horizon_color = Color(0.7, 0.75, 0.84, 1)
+
+[sub_resource type="Sky" id="Sky_main"]
+sky_material = SubResource("ProceduralSkyMaterial_main")
+
+[sub_resource type="Environment" id="Environment_main"]
+background_mode = 2
+sky = SubResource("Sky_main")
+ambient_light_source = 3
+tonemap_mode = 3
+ssao_enabled = true
+glow_enabled = true
+glow_intensity = 0.9
+glow_bloom = 0.05
+
+[node name="Main" type="Node3D"]
+process_mode = 3
+script = ExtResource("1_main")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_main")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.8192, -0.452, 0.3531, 0, 0.6157, 0.788, -0.5736, -0.6455, 0.5043, 0, 20, 0)
+light_color = Color(1, 0.96, 0.9, 1)
+light_energy = 1.2
+shadow_enabled = true
+directional_shadow_max_distance = 80.0
+
+[node name="FillLight" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866, 0.25, -0.433, 0, 0.866, 0.5, 0.5, 0.433, -0.75, 0, 20, 0)
+light_color = Color(0.6, 0.7, 1, 1)
+light_energy = 0.25
+
+[node name="Arena" parent="." instance=ExtResource("2_arena")]
+process_mode = 1
+
+[node name="Player" parent="." instance=ExtResource("3_player")]
+process_mode = 1
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 13)
+
+[node name="WaveSpawner" type="Node3D" parent="." node_paths=PackedStringArray("spawn_points")]
+process_mode = 1
+script = ExtResource("4_spawner")
+grunt_scene = ExtResource("5_grunt")
+shooter_scene = ExtResource("6_shooter")
+spawn_points = NodePath("../Arena/SpawnPoints")
+
+[node name="WaveTimer" type="Timer" parent="WaveSpawner"]
+one_shot = true
+
+[node name="HUD" parent="." instance=ExtResource("7_hud")]
